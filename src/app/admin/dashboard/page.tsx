@@ -15,7 +15,8 @@ import {
 } from 'chart.js'
 import { Line, Doughnut } from 'react-chartjs-2'
 import { generateMockData } from '@/app/utils/mockData'
-import DashboardDrawer from '@/app/components/DashboardDrawer'
+import AdminDrawer from '@/app/components/AdminDrawer'
+import { useRouter } from 'next/navigation'
 
 // Register ChartJS components
 ChartJS.register(
@@ -58,6 +59,7 @@ export default function AdminDashboard(): JSX.Element {
   const [timeRange, setTimeRange] = useState('week')
   const [filterType, setFilterType] = useState('all')
   const [selectedChart, setSelectedChart] = useState<'revenue' | 'properties'>('revenue')
+  const router = useRouter()
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -128,9 +130,9 @@ export default function AdminDashboard(): JSX.Element {
   )
 
   const ChartSection = (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8">
+    <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 mb-8 overflow-hidden">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Analytics Overview</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Analytics Overview</h2>
         <div className="space-x-2">
           <button
             onClick={() => setSelectedChart('revenue')}
@@ -174,6 +176,15 @@ export default function AdminDashboard(): JSX.Element {
     </div>
   )
 
+  const handleAddProperty = () => {
+    // You can either navigate to a new page or show a modal
+    router.push('/admin/properties/add')
+  }
+
+  const handleGenerateReport = () => {
+    router.push('/admin/reports')
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -184,10 +195,10 @@ export default function AdminDashboard(): JSX.Element {
 
   return (
     <div className="min-h-screen bg-gray-50 lg:flex">
-      <DashboardDrawer isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <AdminDrawer isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-1">
-        <div className="p-8">
+      <div className="flex-1 overflow-x-hidden transition-all duration-300 ease-in-out">
+        <div className="p-4 md:p-8">
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center space-x-4">
               <button 
@@ -204,17 +215,23 @@ export default function AdminDashboard(): JSX.Element {
               </div>
             </div>
             <div className="space-x-3">
-              <button className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <button 
+                onClick={handleGenerateReport}
+                className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
                 Generate Report
               </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button 
+                onClick={handleAddProperty}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
                 Add Property
               </button>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <StatCard
               title="Total Properties"
               value={stats?.totalProperties || 0}
@@ -243,58 +260,59 @@ export default function AdminDashboard(): JSX.Element {
 
           {ChartSection}
 
-          {/* Quick Actions Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-semibold mb-4">Pending Approvals</h3>
-              <div className="text-3xl font-bold text-red-600 mb-2">
-                {stats?.pendingApprovals || 0}
+          {/* Replace the Quick Actions div with System Health */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm text-gray-600">Server Response Time</span>
+                  <span className="text-sm font-medium text-green-600">98ms</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-green-600 h-2 rounded-full" style={{ width: '92%' }}></div>
+                </div>
               </div>
-              <button className="w-full px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
-                Review Now
-              </button>
-            </div>
-            
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-semibold mb-4">Lead Conversion</h3>
-              <div className="text-3xl font-bold text-green-600 mb-2">
-                {stats?.leadConversionRate || 0}%
+              
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm text-gray-600">Database Load</span>
+                  <span className="text-sm font-medium text-blue-600">45%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: '45%' }}></div>
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-green-600 h-2.5 rounded-full" 
-                  style={{ width: `${stats?.leadConversionRate || 0}%` }}
-                ></div>
-              </div>
-            </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-2">
-                <button className="w-full px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">
-                  Add New Property
-                </button>
-                <button className="w-full px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors">
-                  View Reports
-                </button>
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm text-gray-600">Storage Usage</span>
+                  <span className="text-sm font-medium text-yellow-600">78%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '78%' }}></div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <span className="text-xs text-gray-500">Last updated: 2 minutes ago</span>
               </div>
             </div>
           </div>
 
           {/* Recent Activities */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 overflow-x-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Recent Activities</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Recent Activities</h2>
               <select 
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="border rounded-lg px-3 py-2 bg-gray-50 text-sm"
+                className="border rounded-lg px-3 py-2 bg-gray-50 text-sm text-gray-900"
               >
                 <option value="all">All Activities</option>
-                <option value="property">Properties</option>
-                <option value="user">Users</option>
-                <option value="sale">Sales</option>
-                <option value="inquiry">Inquiries</option>
+                <option value="application">Applications</option>
+                <option value="viewing">Viewings</option>
+                <option value="lease">Leases</option>
               </select>
             </div>
             <div className="space-y-4">
@@ -311,7 +329,7 @@ export default function AdminDashboard(): JSX.Element {
                   >
                     <span className="text-gray-400">⏰</span>
                     <div className="flex-1">
-                      <p className="text-gray-700">{activity.message}</p>
+                      <p className="text-gray-900">{activity.message}</p>
                       <div className="flex items-center mt-2">
                         <p className="text-sm text-gray-500">
                           {new Date(activity.timestamp).toLocaleDateString()}

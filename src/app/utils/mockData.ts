@@ -36,31 +36,22 @@ export function generateMockData(): { mockStats: DashboardStats; mockActivities:
     leadConversionRate: 92.5
   }
 
-  const mockActivities: Activity[] = [
-    {
-      id: '1',
-      type: 'application',
-      message: 'New student group application for 123 University Ave',
-      timestamp: new Date('2024-03-15T10:30:00'),
-      status: 'pending'
-    },
-    {
-      id: '2',
-      type: 'lease',
-      message: 'Lease signed: 45 College Street - 4 bedroom house',
-      timestamp: new Date('2024-03-15T09:15:00'),
-      status: 'completed'
-    },
-    {
-      id: '3',
-      type: 'viewing',
-      message: 'Group viewing scheduled for Student Complex Unit 12B',
-      timestamp: new Date('2024-03-15T08:45:00'),
-      status: 'urgent'
-    }
-  ]
+  const activityTypes = ['inquiry', 'approval', 'application', 'viewing', 'lease', 'property', 'user', 'sale'] as const;
+  const mockActivities: Activity[] = Array.from({ length: 20 }, (_, i) => ({
+    id: `activity-${i}`,
+    type: activityTypes[Math.floor(Math.random() * activityTypes.length)],
+    message: `Sample activity message ${i + 1}`,
+    timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+    status: ['pending', 'completed', 'urgent'][Math.floor(Math.random() * 3)] as 'pending' | 'completed' | 'urgent'
+  }));
 
-  return { mockStats, mockActivities }
+  // Sort activities by timestamp (most recent first)
+  mockActivities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+
+  return {
+    mockStats,
+    mockActivities
+  }
 }
 
 export const analyticsData = {
@@ -117,3 +108,136 @@ export const analyticsData = {
     }
   ]
 }; 
+
+export interface Property {
+  id: string
+  property: string
+  address: string
+  price: number
+  status: 'Available' | 'Sold' | 'Pending'
+  createdAt: Date
+}
+
+export const mockProperties: Property[] = [
+  {
+    id: '1',
+    property: 'Luxury Villa',
+    address: '123 Palm Street',
+    price: 850000,
+    status: 'Available',
+    createdAt: new Date('2024-01-15')
+  },
+  {
+    id: '2',
+    property: 'Modern Apartment',
+    address: '456 Oak Avenue',
+    price: 320000,
+    status: 'Sold',
+    createdAt: new Date('2024-02-01')
+  },
+  {
+    id: '3',
+    property: 'Beach House',
+    address: '789 Coastal Road',
+    price: 1200000,
+    status: 'Available',
+    createdAt: new Date('2024-02-15')
+  },
+  {
+    id: '4',
+    property: 'City Condo',
+    address: '321 Urban Lane',
+    price: 450000,
+    status: 'Pending',
+    createdAt: new Date('2024-03-01')
+  },
+  {
+    id: '5',
+    property: 'Country Estate',
+    address: '654 Rural Route',
+    price: 925000,
+    status: 'Available',
+    createdAt: new Date('2024-03-10')
+  },
+] 
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'Admin' | 'Agent' | 'Manager' | 'Staff'
+  status: 'Active' | 'Inactive' | 'Suspended'
+  joinedDate: string
+  lastActive: string
+  phoneNumber: string
+  properties: number
+}
+
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'Admin',
+    status: 'Active',
+    joinedDate: '2024-01-15',
+    lastActive: '2024-03-15',
+    phoneNumber: '+1 (555) 123-4567',
+    properties: 12
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    role: 'Agent',
+    status: 'Active',
+    joinedDate: '2024-02-01',
+    lastActive: '2024-03-14',
+    phoneNumber: '+1 (555) 234-5678',
+    properties: 8
+  },
+  {
+    id: '3',
+    name: 'Robert Johnson',
+    email: 'robert@example.com',
+    role: 'Manager',
+    status: 'Active',
+    joinedDate: '2023-11-15',
+    lastActive: '2024-03-15',
+    phoneNumber: '+1 (555) 345-6789',
+    properties: 15
+  },
+  {
+    id: '4',
+    name: 'Sarah Williams',
+    email: 'sarah@example.com',
+    role: 'Agent',
+    status: 'Inactive',
+    joinedDate: '2023-12-01',
+    lastActive: '2024-02-28',
+    phoneNumber: '+1 (555) 456-7890',
+    properties: 5
+  },
+  {
+    id: '5',
+    name: 'Michael Brown',
+    email: 'michael@example.com',
+    role: 'Staff',
+    status: 'Suspended',
+    joinedDate: '2024-01-20',
+    lastActive: '2024-03-10',
+    phoneNumber: '+1 (555) 567-8901',
+    properties: 0
+  },
+  {
+    id: '6',
+    name: 'Emily Davis',
+    email: 'emily@example.com',
+    role: 'Agent',
+    status: 'Active',
+    joinedDate: '2023-10-15',
+    lastActive: '2024-03-15',
+    phoneNumber: '+1 (555) 678-9012',
+    properties: 10
+  }
+] 
