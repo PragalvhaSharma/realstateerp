@@ -15,7 +15,6 @@ import {
 } from 'chart.js'
 import { Line, Doughnut } from 'react-chartjs-2'
 import { generateMockData } from '@/app/utils/mockData'
-import AdminDrawer from '@/app/components/AdminDrawer'
 import { useRouter } from 'next/navigation'
 
 // Register ChartJS components
@@ -52,7 +51,6 @@ interface Activity {
 }
 
 export default function AdminDashboard(): JSX.Element {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [activities, setActivities] = useState<Activity[]>([])
@@ -194,25 +192,13 @@ export default function AdminDashboard(): JSX.Element {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 lg:flex">
-      <AdminDrawer isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
-      <div className="flex-1 overflow-x-hidden transition-all duration-300 ease-in-out">
+    <div className="min-h-screen bg-gray-50">
+      <div className="overflow-x-hidden transition-all duration-300 ease-in-out">
         <div className="p-4 md:p-8">
           <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center space-x-4">
-              <button 
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
-                onClick={() => setIsSidebarOpen(true)}
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                <p className="text-gray-500 mt-1">Welcome back, Admin</p>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+              <p className="text-gray-500 mt-1">Welcome back, Admin</p>
             </div>
             <div className="space-x-3">
               <button 

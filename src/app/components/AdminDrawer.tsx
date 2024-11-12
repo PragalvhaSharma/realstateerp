@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { 
   HomeIcon, 
   UsersIcon, 
   ChartBarIcon,
-  BellIcon,
   XMarkIcon,
   Bars3Icon,
-  DocumentTextIcon
 } from '@heroicons/react/24/outline'
 
 interface DrawerProps {
@@ -20,6 +19,8 @@ interface DrawerProps {
 
 export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   const menuItems = [
     { name: 'Dashboard', icon: HomeIcon, path: '/admin/dashboard' },
@@ -27,8 +28,15 @@ export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) 
     { name: 'Analytics', icon: ChartBarIcon, path: '/admin/analytics' },
   ]
 
+  const handleNavigation = (path: string) => {
+    router.push(path)
+    if (window.innerWidth < 1024) { // Close drawer on mobile after navigation
+      onClose()
+    }
+  }
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Overlay */}
       <div 
         className={`fixed inset-0 bg-black transition-all duration-300 ease-in-out lg:hidden ${
@@ -39,12 +47,13 @@ export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) 
 
       {/* Drawer */}
       <div 
-        className={`fixed lg:static h-screen bg-white shadow-lg 
+        className={`fixed lg:static min-h-screen bg-white shadow-lg 
           transform transition-all duration-300 ease-in-out z-50
+          flex flex-col
           ${isCollapsed ? 'w-20' : 'w-64'} 
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
-        {/* Header with improved transitions */}
+        {/* Header */}
         <div className="p-6 border-b flex justify-between items-center">
           <div className="flex items-center">
             <button 
@@ -66,15 +75,16 @@ export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) 
           </div>
         </div>
 
-        {/* Navigation Items with improved transitions */}
+        {/* Navigation Items */}
         <nav className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.name}>
-                <Link 
-                  href={item.path}
-                  className={`flex items-center p-3 rounded-lg transition-all duration-300 ease-in-out
+                <button
+                  onClick={() => handleNavigation(item.path)}
+                  className={`w-full flex items-center p-3 rounded-lg transition-all duration-300 ease-in-out
                     hover:bg-blue-50 text-gray-700 hover:text-blue-600
+                    ${pathname === item.path ? 'bg-blue-50 text-blue-600' : ''}
                     ${!isCollapsed ? 'space-x-3' : 'justify-center'}`}
                   title={isCollapsed ? item.name : ''}
                 >
@@ -84,7 +94,7 @@ export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) 
                   {!isCollapsed && (
                     <span className="transition-opacity duration-300">{item.name}</span>
                   )}
-                </Link>
+                </button>
               </li>
             ))}
           </ul>
@@ -92,7 +102,7 @@ export default function AdminDrawer({ isOpen, onClose, children }: DrawerProps) 
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 overflow-auto bg-gray-50">
+      <div className="flex-1 overflow-auto min-h-screen bg-gray-50">
         {children}
       </div>
     </div>

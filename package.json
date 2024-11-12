@@ -12,6 +12,7 @@
     "@auth/core": "^0.37.3",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.5",
+    "@tremor/react": "^3.18.4",
     "@types/recharts": "^1.8.29",
     "chart.js": "^4.4.6",
     "jspdf": "^2.5.2",
