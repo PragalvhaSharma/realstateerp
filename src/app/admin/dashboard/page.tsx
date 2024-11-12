@@ -43,7 +43,7 @@ interface DashboardStats {
 
 interface Activity {
   id: string
-  type: 'property' | 'user' | 'sale' | 'inquiry' | 'approval'
+  type: 'property' | 'user' | 'sale' | 'inquiry' | 'approval' | 'application' | 'viewing' | 'lease'
   message: string
   timestamp: Date
   status?: 'pending' | 'completed' | 'urgent'
