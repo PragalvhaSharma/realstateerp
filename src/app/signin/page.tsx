@@ -18,11 +18,17 @@ export default function Signin(): JSX.Element {
     e.preventDefault()
     setError('')
 
-    // Check for hardcoded credentials
+    // Check for admin credentials
     if (formData.email === 'admin123@gmai.com' && formData.password === '12345') {
-      console.log('Login successful')
+      console.log('Admin login successful')
       router.push('/admin/dashboard')
-    } else {
+    }
+    // Check for student credentials
+    else if (formData.email === 'student@gmail.com' && formData.password === '12345') {
+      console.log('Student login successful')
+      router.push('/student/dashboard')
+    }
+    else {
       setError('Invalid email or password')
     }
   }
